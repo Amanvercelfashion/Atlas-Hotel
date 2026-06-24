@@ -8,20 +8,20 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-    :root{--gold:#c9a84c;--gold-dark:#a8882e;--dark:#1a1a2e;--dark2:#16213e;--dark3:#0f3460;--text:#f0e6d3;--text-muted:#a09080;--bg:#0d0d1a;--card:#1e1e32;--card-hover:#2a2a44;--border:#333355;--success:#2ecc71;--error:#e74c3c;--font-serif:'Playfair Display',serif;--font-sans:'Inter',sans-serif;--radius:12px;--radius-sm:8px}
+    :root{--gold:#c9a84c;--gold-dark:#a8882e;--dark:#3d2b1f;--dark2:#5c4033;--dark3:#8b6f47;--text:#3d2b1f;--text-muted:#8b7355;--bg:#f5f0e8;--card:#ffffff;--card-hover:#f5efe5;--border:#d4c5a9;--success:#2ecc71;--error:#e74c3c;--font-serif:'Playfair Display',serif;--font-sans:'Inter',sans-serif;--radius:12px;--radius-sm:8px}
     html{scroll-behavior:smooth}
     body{font-family:var(--font-sans);background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh}
     a{color:var(--gold);text-decoration:none}
-    h1,h2,h3,h4{font-family:var(--font-serif);font-weight:600;color:#fff}
+    h1,h2,h3,h4{font-family:var(--font-serif);font-weight:600;color:var(--dark)}
 
     .admin-login{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:16px}
     .login-box{background:var(--card);padding:40px;border-radius:var(--radius);border:1px solid var(--border);max-width:400px;width:100%}
     .login-box h1{text-align:center;color:var(--gold);margin-bottom:24px}
     .login-form{display:flex;flex-direction:column;gap:16px}
-    .login-form input{padding:14px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--dark);color:var(--text);font-size:1rem;font-family:var(--font-sans);outline:none}
+    .login-form input{padding:14px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--bg);color:var(--text);font-size:1rem;font-family:var(--font-sans);outline:none}
     .login-form input:focus{border-color:var(--gold)}
     .btn{width:100%;padding:14px;border:none;border-radius:var(--radius-sm);font-weight:600;font-size:1rem;cursor:pointer;font-family:var(--font-sans);transition:background .2s}
-    .btn-primary{background:var(--gold);color:var(--dark)}
+    .btn-primary{background:var(--gold);color:#fff}
     .btn-primary:hover{background:var(--gold-dark)}
     .btn-danger{background:var(--error);color:#fff}
     .btn-danger:hover{opacity:0.9}
@@ -38,7 +38,7 @@
     .admin-tabs{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:24px;overflow-x:auto;padding-bottom:4px}
     .admin-tab{padding:10px 20px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-muted);cursor:pointer;font-size:0.9rem;white-space:nowrap;transition:all .2s}
     .admin-tab:hover{background:var(--card-hover)}
-    .admin-tab.active{background:var(--gold);color:var(--dark);border-color:var(--gold);font-weight:600}
+    .admin-tab.active{background:var(--gold);color:#fff;border-color:var(--gold);font-weight:600}
 
     .admin-section{display:none}
     .admin-section.active{display:block}
@@ -50,19 +50,19 @@
     .admin-table-wrap{overflow-x:auto}
     table{width:100%;border-collapse:collapse;font-size:0.85rem}
     th,td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--border)}
-    th{color:var(--gold);font-weight:600;background:var(--dark);white-space:nowrap}
+    th{color:var(--gold);font-weight:600;background:var(--bg);white-space:nowrap}
     td{color:var(--text);vertical-align:top}
     .status-confirmed{color:var(--success)}
     .status-cancelled{color:var(--error)}
     .status-amended{color:#f39c12}
 
-    .modal-overlay{position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,0.7);display:none;align-items:center;justify-content:center;padding:16px}
+    .modal-overlay{position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,0.5);display:none;align-items:center;justify-content:center;padding:16px}
     .modal-overlay.active{display:flex}
     .modal{background:var(--card);border-radius:var(--radius);padding:32px;max-width:500px;width:100%;max-height:85vh;overflow-y:auto;border:1px solid var(--border)}
     .modal h3{font-size:1.2rem;margin-bottom:16px;color:var(--gold)}
     .modal-form{display:flex;flex-direction:column;gap:12px}
     .modal-form label{font-size:0.85rem;color:var(--text-muted)}
-    .modal-form input,.modal-form select,.modal-form textarea{padding:10px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--dark);color:var(--text);font-size:0.9rem;font-family:var(--font-sans);outline:none}
+    .modal-form input,.modal-form select,.modal-form textarea{padding:10px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--bg);color:var(--text);font-size:0.9rem;font-family:var(--font-sans);outline:none}
     .modal-form input:focus,.modal-form select:focus,.modal-form textarea:focus{border-color:var(--gold)}
     .modal-form textarea{resize:vertical}
     .modal-actions{display:flex;gap:8px;margin-top:8px}

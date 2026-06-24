@@ -95,7 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
         card.className = 'room-card';
         card.innerHTML = `
           <div class="room-img">
-            ${room.image ? `<img src="${room.image}" alt="${room.name}" loading="lazy">` : `<div class="room-img-placeholder">✦</div>`}
+            <img src="${room.image || 'https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=600&q=80'}" alt="${room.name}" loading="lazy">
           </div>
           <div class="room-body">
             <h3>${room.name}</h3>
@@ -129,10 +129,10 @@ document.addEventListener('DOMContentLoaded', () => {
       const res = await fetch('/api/services');
       const services = await res.json();
       const container = document.getElementById('services-list');
-      const icons = ['🌐', '🛎️', '🍽️', '🍸', '💪', '🧖', '🎩', '👔', '🚗', '🅿️'];
+      const icons = ['fa-wifi', 'fa-concierge-bell', 'fa-utensils', 'fa-cocktail', 'fa-dumbbell', 'fa-spa', 'fa-user-tie', 'fa-briefcase', 'fa-car', 'fa-parking'];
       container.innerHTML = services.map((s, i) => `
         <div class="service-item">
-          <div class="service-icon">${s.icon ? `<img src="${s.icon}" alt="" style="width:20px;height:20px">` : (icons[i % icons.length] || '✦')}</div>
+          <div class="service-icon">${s.icon ? `<img src="${s.icon}" alt="" style="width:20px;height:20px">` : `<i class="fas ${icons[i % icons.length]}"></i>`}</div>
           <span>${s.name}</span>
         </div>
       `).join('');
@@ -178,7 +178,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       container.innerHTML = images.map(img => `
         <div class="gallery-item">
-          ${img.image ? `<img src="${img.image}" alt="${img.caption || ''}" loading="lazy">` : '<div class="gallery-placeholder">✦</div>'}
+          <img src="${img.image || 'https://images.unsplash.com/photo-1562778612-e1e0cda9915c?w=400&q=80'}" alt="${img.caption || ''}" loading="lazy">
         </div>
       `).join('');
     } catch (e) { console.error('Failed to load gallery', e); }
