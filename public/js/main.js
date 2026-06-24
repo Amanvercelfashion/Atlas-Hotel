@@ -83,15 +83,12 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('contact-email').textContent = info.email;
         document.getElementById('contact-email').href = `mailto:${info.email}`;
       }
-      if (info.logo) {
+      if (info.logo && typeof info.logo === 'string' && info.logo.trim()) {
         const logoImg = document.getElementById('nav-logo-img');
         const logoText = document.getElementById('nav-logo-text');
+        logoImg.onload = () => { logoText.style.display = 'none'; };
+        logoImg.onerror = () => { logoImg.style.display = 'none'; logoText.style.display = 'inline'; };
         logoImg.src = info.logo;
-        logoText.style.display = 'none';
-        logoImg.onerror = () => {
-          logoImg.style.display = 'none';
-          logoText.style.display = 'inline';
-        };
       }
     } catch (e) { console.error('Failed to load hotel info', e); }
   }
