@@ -139,6 +139,14 @@ app.put('/api/hotel-info', requireAdmin, async (req, res) => {
   res.json({ success: true });
 });
 
+app.post('/api/hotel-info/logo', requireAdmin, upload.single('logo'), async (req, res) => {
+  if (!req.file) return res.status(400).json({ error: 'Logo image required' });
+  const url = await uploadToSupabase(req.file.buffer, req.file.originalname, req.file.mimetype);
+  const { error } = await supabase.from('hotel_info').upsert({ key: 'logo', value: url }, { onConflict: 'key' });
+  if (error) return res.status(500).json({ error: error.message });
+  res.json({ success: true, url });
+});
+
 // Rooms
 
 app.get('/api/rooms', async (req, res) => {

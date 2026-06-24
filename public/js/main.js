@@ -64,8 +64,14 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       const res = await fetch('/api/hotel-info');
       const info = await res.json();
-      if (info.name) document.querySelector('.hero-title').textContent = info.name;
-      if (info.tagline) document.querySelector('.hero-tagline').textContent = info.tagline;
+      if (info.name) {
+        document.querySelector('.hero-title').textContent = info.name;
+        document.querySelector('.footer-logo').textContent = '\u2726 ' + info.name;
+      }
+      if (info.tagline) {
+        document.querySelector('.hero-tagline').textContent = info.tagline;
+        document.querySelector('.footer-content p').textContent = info.tagline;
+      }
       if (info.about) document.getElementById('about-text').textContent = info.about;
       if (info.address) document.getElementById('contact-address').textContent = info.address;
       if (info.phone) {
@@ -76,6 +82,12 @@ document.addEventListener('DOMContentLoaded', () => {
       if (info.email) {
         document.getElementById('contact-email').textContent = info.email;
         document.getElementById('contact-email').href = `mailto:${info.email}`;
+      }
+      if (info.logo) {
+        const logoImg = document.getElementById('nav-logo-img');
+        logoImg.src = info.logo;
+        logoImg.style.display = 'inline';
+        document.getElementById('nav-logo-text').style.display = 'none';
       }
     } catch (e) { console.error('Failed to load hotel info', e); }
   }
