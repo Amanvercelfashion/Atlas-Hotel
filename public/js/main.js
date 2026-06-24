@@ -85,11 +85,10 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       if (info.logo && typeof info.logo === 'string' && info.logo.trim()) {
         const logoImg = document.getElementById('nav-logo-img');
-        const logoText = document.getElementById('nav-logo-text');
-        logoText.style.display = 'none';
         logoImg.src = info.logo;
+        logoImg.style.display = 'none';
         logoImg.onload = () => { logoImg.style.display = ''; };
-        logoImg.onerror = () => { logoImg.style.display = 'none'; logoText.style.display = 'inline'; };
+        logoImg.onerror = () => { logoImg.style.display = 'none'; };
       }
     } catch (e) { console.error('Failed to load hotel info', e); }
   }
