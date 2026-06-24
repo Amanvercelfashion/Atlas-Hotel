@@ -85,9 +85,15 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       if (info.logo) {
         const logoImg = document.getElementById('nav-logo-img');
+        const logoText = document.getElementById('nav-logo-text');
+        logoImg.onload = () => {
+          logoImg.classList.add('loaded');
+          logoText.style.display = 'none';
+        };
+        logoImg.onerror = () => {
+          logoText.style.display = 'inline';
+        };
         logoImg.src = info.logo;
-        logoImg.style.display = 'inline';
-        document.getElementById('nav-logo-text').style.display = 'none';
       }
     } catch (e) { console.error('Failed to load hotel info', e); }
   }
