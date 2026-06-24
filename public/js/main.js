@@ -86,14 +86,12 @@ document.addEventListener('DOMContentLoaded', () => {
       if (info.logo) {
         const logoImg = document.getElementById('nav-logo-img');
         const logoText = document.getElementById('nav-logo-text');
-        logoImg.onload = () => {
-          logoImg.classList.add('loaded');
-          logoText.style.display = 'none';
-        };
+        logoImg.src = info.logo;
+        logoText.style.display = 'none';
         logoImg.onerror = () => {
+          logoImg.style.display = 'none';
           logoText.style.display = 'inline';
         };
-        logoImg.src = info.logo;
       }
     } catch (e) { console.error('Failed to load hotel info', e); }
   }
