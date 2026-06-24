@@ -22,6 +22,8 @@ h1,h2,h3,h4{font-family:var(--font-serif);font-weight:600;color:var(--dark)}
 .nav-links-desktop{display:none}
 .nav-link{padding:12px 16px;color:var(--text);font-size:0.95rem;border-radius:var(--radius-sm);transition:background .2s,color .2s;font-family:var(--font-sans)}
 .nav-link:hover{background:var(--card-hover);color:var(--gold)}
+.nav-link-action{font-size:0.8rem;padding:4px 16px 8px;color:var(--gold-dark);font-weight:500;border-radius:0}
+.nav-link-action:hover{background:none;color:var(--gold)}
 .nav-divider{height:1px;background:var(--border);margin:8px 0}
 
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:998;opacity:0;pointer-events:none;transition:opacity .3s}
@@ -164,6 +166,7 @@ h1,h2,h3,h4{font-family:var(--font-serif);font-weight:600;color:var(--dark)}
 @media(min-width:769px){
   .nav-links-desktop{display:flex;align-items:center;gap:2px}
   .nav-links-desktop .nav-link{padding:8px 12px;font-size:0.85rem;white-space:nowrap}
+  .nav-links-desktop .nav-link-action{font-size:0.75rem;padding:2px 12px 6px}
 }
 
 @media(max-width:768px){
