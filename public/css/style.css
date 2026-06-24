@@ -164,8 +164,6 @@ h1,h2,h3,h4{font-family:var(--font-serif);font-weight:600;color:var(--dark)}
 @media(min-width:769px){
   .nav-links-desktop{display:flex;align-items:center;gap:2px}
   .nav-links-desktop .nav-link{padding:8px 12px;font-size:0.85rem;white-space:nowrap}
-  .nav-menu{display:none}
-  .overlay{display:none}
 }
 
 @media(max-width:768px){
