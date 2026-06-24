@@ -192,3 +192,12 @@ SELECT * FROM (VALUES
   ('email',   'info@atlashotel.com')
 ) AS v
 WHERE NOT EXISTS (SELECT 1 FROM hotel_info);
+
+-- Storage: make uploads bucket publicly readable (run this in Supabase SQL Editor too if bucket already exists)
+DO $$
+BEGIN
+  IF EXISTS (SELECT 1 FROM storage.buckets WHERE id = 'uploads') THEN
+    DROP POLICY IF EXISTS "Public Access" ON storage.objects;
+    CREATE POLICY "Public Access" ON storage.objects FOR SELECT USING (bucket_id = 'uploads');
+  END IF;
+END $$;
