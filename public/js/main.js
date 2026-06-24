@@ -207,8 +207,11 @@ document.addEventListener('DOMContentLoaded', () => {
       const container = document.getElementById('menu-container');
       container.innerHTML = items.map(item => `
         <div class="menu-item">
-          <h4>${item.name}</h4>
-          <p>${item.description}</p>
+          ${item.image ? `<img src="${item.image}" alt="${item.name}" class="menu-item-img" loading="lazy">` : ''}
+          <div class="menu-item-body">
+            <h4>${item.name}</h4>
+            <p>${item.description}</p>
+          </div>
         </div>
       `).join('');
     } catch (e) { console.error('Failed to load menu', e); }
