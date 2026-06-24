@@ -114,7 +114,7 @@ CREATE TABLE IF NOT EXISTS hotel_info (
 -- Seed Data
 
 INSERT INTO admins (username, password)
-SELECT 'admin', '$2a$10$dCpmQgiZT1bHKACoti0k.e7fXVLueMXTyfkujhu2viymCVpyL5jq6'
+SELECT 'admin', '$2a$10$zBq7XtRptaTEYdcxe3Wn6eQBQkcpZ9rb9RP.OcMoJYAVoIyslcnfu'
 WHERE NOT EXISTS (SELECT 1 FROM admins WHERE username = 'admin');
 
 INSERT INTO booking_counter (counter)
