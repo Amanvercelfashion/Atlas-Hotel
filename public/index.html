@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Atlas Hotel</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div id="overlay" class="overlay"></div>
+
+  <nav id="navbar" class="navbar">
+    <div class="nav-container">
+      <a href="#hero" class="nav-logo">Atlas Hotel</a>
+      <button id="hamburger" class="hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+      <div id="nav-menu" class="nav-menu">
+        <a href="#rooms" class="nav-link">Rooms & Suites</a>
+        <a href="#restaurant" class="nav-link">Restaurant & Bar</a>
+        <a href="#" class="nav-link nav-popup" data-popup="services">Services & Amenities</a>
+        <a href="#" class="nav-link nav-popup" data-popup="events">Events</a>
+        <a href="#" class="nav-link nav-popup" data-popup="offers">Offers</a>
+        <a href="#" class="nav-link nav-popup" data-popup="gallery">Gallery</a>
+        <div class="nav-divider"></div>
+        <a href="/admin" class="nav-link">Admin Panel</a>
+        <a href="#about" class="nav-link">Contact Us</a>
+      </div>
+    </div>
+  </nav>
+
+  <section id="hero" class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <div class="hero-logo">✦</div>
+      <h1 class="hero-title">Atlas Hotel</h1>
+      <p class="hero-tagline">Where Luxury Meets Comfort</p>
+      <p class="hero-desc">Experience unparalleled elegance and world-class hospitality in the heart of the city. Every moment crafted to perfection.</p>
+    </div>
+  </section>
+
+  <section id="rooms" class="section rooms-section">
+    <div class="section-header">
+      <h2>Rooms & Suites</h2>
+      <p>Choose from our selection of luxurious accommodations</p>
+    </div>
+    <div id="rooms-container" class="rooms-container"></div>
+
+    <div class="booking-wrapper">
+      <h3>Book a Room</h3>
+      <form id="booking-form" class="booking-form">
+        <input type="hidden" id="booking-room-id" required>
+        <div class="form-group">
+          <label for="booking-room-select">Room Type</label>
+          <select id="booking-room-select" required></select>
+        </div>
+        <div class="form-group">
+          <label for="booking-name">Full Name</label>
+          <input type="text" id="booking-name" required placeholder="John Doe">
+        </div>
+        <div class="form-group">
+          <label for="booking-email">Email Address</label>
+          <input type="email" id="booking-email" required placeholder="john@example.com">
+        </div>
+        <div class="form-group">
+          <label for="booking-phone">Phone Number <small>(optional)</small></label>
+          <input type="tel" id="booking-phone" placeholder="+1 555 123 4567">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="booking-checkin">Check-in</label>
+            <input type="date" id="booking-checkin" required>
+          </div>
+          <div class="form-group">
+            <label for="booking-checkout">Check-out</label>
+            <input type="date" id="booking-checkout" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="booking-guests">Number of Guests</label>
+          <input type="number" id="booking-guests" min="1" max="10" required value="1">
+        </div>
+        <div class="form-group">
+          <label for="booking-requests">Special Requests <small>(optional)</small></label>
+          <textarea id="booking-requests" rows="3" placeholder="Any special requests..."></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit Booking</button>
+        <div id="booking-message" class="form-message"></div>
+      </form>
+    </div>
+
+    <div class="my-bookings-wrapper">
+      <h3>My Bookings</h3>
+      <p class="section-sub">View, amend, or cancel your booking</p>
+      <form id="lookup-form" class="lookup-form">
+        <div class="form-group">
+          <label for="lookup-email">Email Address</label>
+          <input type="email" id="lookup-email" required>
+        </div>
+        <div class="form-group">
+          <label for="lookup-number">Booking Number</label>
+          <input type="text" id="lookup-number" required placeholder="e.g. ABC123">
+        </div>
+        <button type="submit" class="btn btn-secondary">Find My Booking</button>
+      </form>
+      <div id="lookup-result" class="lookup-result"></div>
+      <div id="lookup-message" class="form-message"></div>
+    </div>
+  </section>
+
+  <section id="restaurant" class="section restaurant-section">
+    <div class="section-header">
+      <h2>Restaurant & Bar</h2>
+      <p>Exquisite dining experiences await you</p>
+    </div>
+    <div class="restaurant-content">
+      <div class="restaurant-image">
+        <div class="restaurant-img-placeholder">✦</div>
+      </div>
+      <div class="restaurant-menu">
+        <h3>Featured Menu</h3>
+        <div id="menu-container" class="menu-items"></div>
+      </div>
+    </div>
+    <div class="restaurant-cta">
+      <p>Reserve your table for an unforgettable dining experience</p>
+      <a href="tel:+15551234567" class="btn btn-primary btn-call">Reserve Your Table Now</a>
+    </div>
+  </section>
+
+  <section id="about" class="section about-section">
+    <div class="section-header">
+      <h2>About Us</h2>
+    </div>
+    <div class="about-content">
+      <div class="about-story">
+        <p id="about-text">Atlas Hotel has been a beacon of luxury and hospitality since 1995. Nestled in the heart of the city, we offer an unparalleled experience that blends timeless elegance with modern comfort.</p>
+      </div>
+      <div class="testimonials">
+        <h3>What Our Guests Say</h3>
+        <div id="testimonial-carousel" class="testimonial-carousel"></div>
+      </div>
+      <div class="contact-details">
+        <h3>Contact Us</h3>
+        <p><strong>Address:</strong> <span id="contact-address">123 Luxury Avenue, Beverly Hills, CA 90210</span></p>
+        <p><strong>Phone:</strong> <a id="contact-phone" href="tel:+15551234567">+1 (555) 123-4567</a></p>
+        <p><strong>Email:</strong> <a id="contact-email" href="mailto:info@atlashotel.com">info@atlashotel.com</a></p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-brand">
+        <span class="footer-logo">✦ Atlas Hotel</span>
+        <p>Where Luxury Meets Comfort</p>
+      </div>
+      <div class="footer-links">
+        <a href="#rooms">Rooms</a>
+        <a href="#restaurant">Restaurant</a>
+        <a href="#about">About</a>
+        <a href="/admin">Admin</a>
+      </div>
+      <div class="footer-copy">&copy; 2026 Atlas Hotel. All rights reserved.</div>
+    </div>
+  </footer>
+
+  <div id="popup-services" class="popup-overlay">
+    <div class="popup">
+      <button class="popup-close">&times;</button>
+      <h2>Services & Amenities</h2>
+      <div id="services-list" class="services-list"></div>
+    </div>
+  </div>
+
+  <div id="popup-events" class="popup-overlay">
+    <div class="popup">
+      <button class="popup-close">&times;</button>
+      <h2>Events</h2>
+      <div id="events-list" class="events-list"></div>
+    </div>
+  </div>
+
+  <div id="popup-offers" class="popup-overlay">
+    <div class="popup">
+      <button class="popup-close">&times;</button>
+      <h2>Special Offers</h2>
+      <div id="offers-list" class="offers-list"></div>
+    </div>
+  </div>
+
+  <div id="popup-gallery" class="popup-overlay">
+    <div class="popup popup-gallery">
+      <button class="popup-close">&times;</button>
+      <h2>Gallery</h2>
+      <div id="gallery-grid" class="gallery-grid"></div>
+    </div>
+  </div>
+
+  <script src="/js/main.js"></script>
+</body>
+</html>

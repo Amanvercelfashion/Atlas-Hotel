@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel - Atlas Hotel</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--gold:#c9a84c;--gold-dark:#a8882e;--dark:#1a1a2e;--dark2:#16213e;--dark3:#0f3460;--text:#f0e6d3;--text-muted:#a09080;--bg:#0d0d1a;--card:#1e1e32;--card-hover:#2a2a44;--border:#333355;--success:#2ecc71;--error:#e74c3c;--font-serif:'Playfair Display',serif;--font-sans:'Inter',sans-serif;--radius:12px;--radius-sm:8px}
+    html{scroll-behavior:smooth}
+    body{font-family:var(--font-sans);background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh}
+    a{color:var(--gold);text-decoration:none}
+    h1,h2,h3,h4{font-family:var(--font-serif);font-weight:600;color:#fff}
+
+    .admin-login{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:16px}
+    .login-box{background:var(--card);padding:40px;border-radius:var(--radius);border:1px solid var(--border);max-width:400px;width:100%}
+    .login-box h1{text-align:center;color:var(--gold);margin-bottom:24px}
+    .login-form{display:flex;flex-direction:column;gap:16px}
+    .login-form input{padding:14px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--dark);color:var(--text);font-size:1rem;font-family:var(--font-sans);outline:none}
+    .login-form input:focus{border-color:var(--gold)}
+    .btn{width:100%;padding:14px;border:none;border-radius:var(--radius-sm);font-weight:600;font-size:1rem;cursor:pointer;font-family:var(--font-sans);transition:background .2s}
+    .btn-primary{background:var(--gold);color:var(--dark)}
+    .btn-primary:hover{background:var(--gold-dark)}
+    .btn-danger{background:var(--error);color:#fff}
+    .btn-danger:hover{opacity:0.9}
+    .btn-sm{padding:8px 16px;font-size:0.85rem;width:auto}
+
+    .admin-panel{display:none;padding:16px}
+    .admin-panel.active{display:block}
+    .admin-header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;padding:16px 0;margin-bottom:24px;border-bottom:1px solid var(--border)}
+    .admin-header h1{font-size:1.5rem;color:var(--gold)}
+    .admin-header .user-info{color:var(--text-muted);font-size:0.9rem}
+    .btn-logout{background:none;border:1px solid var(--border);color:var(--text-muted);padding:8px 16px;border-radius:var(--radius-sm);cursor:pointer;font-size:0.85rem;transition:all .2s}
+    .btn-logout:hover{color:var(--error);border-color:var(--error)}
+
+    .admin-tabs{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:24px;overflow-x:auto;padding-bottom:4px}
+    .admin-tab{padding:10px 20px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-muted);cursor:pointer;font-size:0.9rem;white-space:nowrap;transition:all .2s}
+    .admin-tab:hover{background:var(--card-hover)}
+    .admin-tab.active{background:var(--gold);color:var(--dark);border-color:var(--gold);font-weight:600}
+
+    .admin-section{display:none}
+    .admin-section.active{display:block}
+    .admin-section h2{font-size:1.3rem;margin-bottom:16px;color:var(--gold)}
+
+    .admin-toolbar{display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
+    .admin-toolbar .btn{padding:10px 20px;font-size:0.9rem}
+
+    .admin-table-wrap{overflow-x:auto}
+    table{width:100%;border-collapse:collapse;font-size:0.85rem}
+    th,td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--border)}
+    th{color:var(--gold);font-weight:600;background:var(--dark);white-space:nowrap}
+    td{color:var(--text);vertical-align:top}
+    .status-confirmed{color:var(--success)}
+    .status-cancelled{color:var(--error)}
+    .status-amended{color:#f39c12}
+
+    .modal-overlay{position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,0.7);display:none;align-items:center;justify-content:center;padding:16px}
+    .modal-overlay.active{display:flex}
+    .modal{background:var(--card);border-radius:var(--radius);padding:32px;max-width:500px;width:100%;max-height:85vh;overflow-y:auto;border:1px solid var(--border)}
+    .modal h3{font-size:1.2rem;margin-bottom:16px;color:var(--gold)}
+    .modal-form{display:flex;flex-direction:column;gap:12px}
+    .modal-form label{font-size:0.85rem;color:var(--text-muted)}
+    .modal-form input,.modal-form select,.modal-form textarea{padding:10px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--dark);color:var(--text);font-size:0.9rem;font-family:var(--font-sans);outline:none}
+    .modal-form input:focus,.modal-form select:focus,.modal-form textarea:focus{border-color:var(--gold)}
+    .modal-form textarea{resize:vertical}
+    .modal-actions{display:flex;gap:8px;margin-top:8px}
+    .modal-actions .btn{padding:10px 20px;font-size:0.9rem;width:auto}
+    .modal-close{float:right;background:none;border:none;color:var(--text-muted);font-size:1.5rem;cursor:pointer;padding:4px;line-height:1}
+    .modal-close:hover{color:var(--error)}
+    .form-message{padding:10px;border-radius:var(--radius-sm);display:none;font-size:0.85rem}
+    .form-message.success{display:block;background:rgba(46,204,113,0.1);border:1px solid var(--success);color:var(--success)}
+    .form-message.error{display:block;background:rgba(231,76,60,0.1);border:1px solid var(--error);color:var(--error)}
+    .form-message.info{display:block;background:rgba(52,152,219,0.1);border:1px solid #3498db;color:#3498db}
+
+    @media(max-width:768px){
+      .login-box{padding:24px 16px}
+      .modal{padding:24px 16px}
+      th,td{padding:8px 6px;font-size:0.8rem}
+      .admin-tab{padding:8px 14px;font-size:0.85rem}
+    }
+
+    @media(max-width:480px){
+      .admin-header h1{font-size:1.2rem}
+      .admin-tabs{gap:2px}
+      .admin-tab{padding:6px 10px;font-size:0.8rem}
+      table{font-size:0.75rem}
+      th,td{padding:6px 4px}
+    }
+  </style>
+</head>
+<body>
+  <div id="login-section" class="admin-login">
+    <div class="login-box">
+      <h1>Admin Login</h1>
+      <form id="login-form" class="login-form">
+        <input type="text" id="login-username" placeholder="Username" required>
+        <input type="password" id="login-password" placeholder="Password" required>
+        <button type="submit" class="btn btn-primary">Sign In</button>
+        <div id="login-message" class="form-message"></div>
+      </form>
+    </div>
+  </div>
+
+  <div id="admin-panel" class="admin-panel">
+    <div class="admin-header">
+      <h1>Atlas Hotel Admin</h1>
+      <div>
+        <span class="user-info" id="admin-user"></span>
+        <button id="btn-logout" class="btn-logout">Logout</button>
+      </div>
+    </div>
+
+    <div class="admin-tabs">
+      <button class="admin-tab active" data-section="bookings">Bookings</button>
+      <button class="admin-tab" data-section="rooms">Rooms</button>
+      <button class="admin-tab" data-section="services">Services</button>
+      <button class="admin-tab" data-section="events">Events</button>
+      <button class="admin-tab" data-section="offers">Offers</button>
+      <button class="admin-tab" data-section="menu">Menu</button>
+      <button class="admin-tab" data-section="gallery">Gallery</button>
+      <button class="admin-tab" data-section="testimonials">Testimonials</button>
+      <button class="admin-tab" data-section="info">Hotel Info</button>
+    </div>
+
+    <div id="section-bookings" class="admin-section active">
+      <h2>All Bookings</h2>
+      <div class="admin-table-wrap"><table><thead><tr><th>#</th><th>Number</th><th>Room</th><th>Guest</th><th>Email</th><th>Check-in</th><th>Check-out</th><th>Guests</th><th>Status</th><th>Date</th></tr></thead><tbody id="bookings-table"></tbody></table></div>
+    </div>
+
+    <div id="section-rooms" class="admin-section">
+      <div class="admin-toolbar"><button class="btn btn-primary btn-sm" onclick="openModal('room')">+ Add Room</button></div>
+      <div class="admin-table-wrap"><table><thead><tr><th>ID</th><th>Name</th><th>Price</th><th>Units</th><th>Actions</th></tr></thead><tbody id="rooms-table"></tbody></table></div>
+    </div>
+
+    <div id="section-services" class="admin-section">
+      <div class="admin-toolbar"><button class="btn btn-primary btn-sm" onclick="openModal('service')">+ Add Service</button></div>
+      <div class="admin-table-wrap"><table><thead><tr><th>ID</th><th>Name</th><th>Actions</th></tr></thead><tbody id="services-table"></tbody></table></div>
+    </div>
+
+    <div id="section-events" class="admin-section">
+      <div class="admin-toolbar"><button class="btn btn-primary btn-sm" onclick="openModal('event')">+ Add Event</button></div>
+      <div class="admin-table-wrap"><table><thead><tr><th>ID</th><th>Title</th><th>Actions</th></tr></thead><tbody id="events-table"></tbody></table></div>
+    </div>
+
+    <div id="section-offers" class="admin-section">
+      <div class="admin-toolbar"><button class="btn btn-primary btn-sm" onclick="openModal('offer')">+ Add Offer</button></div>
+      <div class="admin-table-wrap"><table><thead><tr><th>ID</th><th>Title</th><th>Actions</th></tr></thead><tbody id="offers-table"></tbody></table></div>
+    </div>
+
+    <div id="section-menu" class="admin-section">
+      <div class="admin-toolbar"><button class="btn btn-primary btn-sm" onclick="openModal('menu')">+ Add Item</button></div>
+      <div class="admin-table-wrap"><table><thead><tr><th>ID</th><th>Name</th><th>Actions</th></tr></thead><tbody id="menu-table"></tbody></table></div>
+    </div>
+
+    <div id="section-gallery" class="admin-section">
+      <div class="admin-toolbar"><button class="btn btn-primary btn-sm" onclick="openModal('gallery')">+ Add Image</button></div>
+      <div class="admin-table-wrap"><table><thead><tr><th>ID</th><th>Image</th><th>Caption</th><th>Actions</th></tr></thead><tbody id="gallery-table"></tbody></table></div>
+    </div>
+
+    <div id="section-testimonials" class="admin-section">
+      <div class="admin-toolbar"><button class="btn btn-primary btn-sm" onclick="openModal('testimonial')">+ Add Testimonial</button></div>
+      <div class="admin-table-wrap"><table><thead><tr><th>ID</th><th>Name</th><th>Actions</th></tr></thead><tbody id="testimonials-table"></tbody></table></div>
+    </div>
+
+    <div id="section-info" class="admin-section">
+      <h2>Hotel Information</h2>
+      <form id="info-form" class="modal-form" style="max-width:500px">
+        <label>Hotel Name</label>
+        <input type="text" id="info-name">
+        <label>Tagline</label>
+        <input type="text" id="info-tagline">
+        <label>About Text</label>
+        <textarea id="info-about" rows="4"></textarea>
+        <label>Address</label>
+        <input type="text" id="info-address">
+        <label>Phone</label>
+        <input type="text" id="info-phone">
+        <label>Email</label>
+        <input type="email" id="info-email">
+        <button type="submit" class="btn btn-primary" style="width:auto">Save Changes</button>
+        <div id="info-message" class="form-message"></div>
+      </form>
+    </div>
+  </div>
+
+  <div id="modal-overlay" class="modal-overlay">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+      <h3 id="modal-title">Add</h3>
+      <form id="modal-form" class="modal-form" enctype="multipart/form-data">
+        <div id="modal-fields"></div>
+        <div id="modal-message" class="form-message"></div>
+        <div class="modal-actions">
+          <button type="submit" class="btn btn-primary" id="modal-submit">Save</button>
+          <button type="button" class="btn btn-secondary" style="background:var(--dark2);color:var(--text);border:1px solid var(--border)" onclick="closeModal()">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    let token = '';
+    let username = '';
+    let currentModal = '';
+    let editId = null;
+    let currentPage = 1;
+
+    document.getElementById('login-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const msg = document.getElementById('login-message');
+      msg.className = 'form-message';
+      msg.style.display = 'none';
+      try {
+        const res = await fetch('/api/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            username: document.getElementById('login-username').value,
+            password: document.getElementById('login-password').value
+          })
+        });
+        const data = await res.json();
+        if (res.ok) {
+          token = data.token;
+          username = data.username;
+          document.getElementById('login-section').style.display = 'none';
+          document.getElementById('admin-panel').classList.add('active');
+          document.getElementById('admin-user').textContent = `Logged in as ${username}`;
+          loadAll();
+        } else {
+          msg.className = 'form-message error';
+          msg.textContent = data.error || 'Login failed';
+          msg.style.display = 'block';
+        }
+      } catch (err) {
+        msg.className = 'form-message error';
+        msg.textContent = 'Network error';
+        msg.style.display = 'block';
+      }
+    });
+
+    document.getElementById('btn-logout').addEventListener('click', () => {
+      token = '';
+      username = '';
+      document.getElementById('login-section').style.display = 'flex';
+      document.getElementById('admin-panel').classList.remove('active');
+    });
+
+    document.querySelectorAll('.admin-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
+        tab.classList.add('active');
+        document.getElementById('section-' + tab.dataset.section).classList.add('active');
+      });
+    });
+
+    function apiHeaders(method) {
+      return {
+        'Authorization': token,
+        ...(method === 'GET' ? {} : {})
+      };
+    }
+
+    async function api(url, options = {}) {
+      const headers = { 'Authorization': token };
+      if (options.body && !(options.body instanceof FormData)) {
+        headers['Content-Type'] = 'application/json';
+      }
+      const res = await fetch(url, { ...options, headers });
+      if (res.status === 401) {
+        alert('Session expired. Please login again.');
+        document.getElementById('btn-logout').click();
+        return null;
+      }
+      return res;
+    }
+
+    function escapeHtml(str) {
+      const div = document.createElement('div');
+      div.textContent = str || '';
+      return div.innerHTML;
+    }
+
+    async function loadAll() {
+      await Promise.all([
+        loadBookings(), loadRoomsTable(), loadServicesTable(), loadEventsTable(),
+        loadOffersTable(), loadMenuTable(), loadGalleryTable(), loadTestimonialsTable(), loadInfoForm()
+      ]);
+    }
+
+    async function loadBookings() {
+      try {
+        const res = await api('/api/bookings/all');
+        if (!res) return;
+        const bookings = await res.json();
+        const tbody = document.getElementById('bookings-table');
+        tbody.innerHTML = bookings.map(b => `
+          <tr>
+            <td>${b.id}</td>
+            <td><strong>${b.booking_number}</strong></td>
+            <td>${escapeHtml(b.room_name)}</td>
+            <td>${escapeHtml(b.guest_name)}</td>
+            <td>${escapeHtml(b.guest_email)}</td>
+            <td>${b.check_in}</td>
+            <td>${b.check_out}</td>
+            <td>${b.guests}</td>
+            <td class="status-${b.status}">${b.status}</td>
+            <td style="font-size:0.8rem">${b.created_at || ''}</td>
+          </tr>
+        `).join('');
+      } catch (e) { console.error(e); }
+    }
+
+    async function loadRoomsTable() {
+      try {
+        const res = await fetch('/api/rooms');
+        const rooms = await res.json();
+        const tbody = document.getElementById('rooms-table');
+        tbody.innerHTML = rooms.map(r => `
+          <tr>
+            <td>${r.id}</td>
+            <td><strong>${escapeHtml(r.name)}</strong></td>
+            <td>$${r.price_per_night}</td>
+            <td>${r.available_units}</td>
+            <td>
+              <button class="btn btn-sm" style="background:var(--dark2);color:var(--gold);border:1px solid var(--gold);padding:4px 10px;font-size:0.8rem;border-radius:4px;cursor:pointer" onclick="editItem('room', ${r.id})">Edit</button>
+              <button class="btn btn-sm btn-danger" style="padding:4px 10px;font-size:0.8rem;border-radius:4px" onclick="deleteItem('rooms', ${r.id})">Delete</button>
+            </td>
+          </tr>
+        `).join('');
+      } catch (e) { console.error(e); }
+    }
+
+    async function loadServicesTable() {
+      try {
+        const res = await fetch('/api/services');
+        const items = await res.json();
+        const tbody = document.getElementById('services-table');
+        tbody.innerHTML = items.map(s => `
+          <tr>
+            <td>${s.id}</td>
+            <td>${escapeHtml(s.name)}</td>
+            <td>
+              <button class="btn btn-sm" style="background:var(--dark2);color:var(--gold);border:1px solid var(--gold);padding:4px 10px;font-size:0.8rem;border-radius:4px;cursor:pointer" onclick="editItem('service', ${s.id})">Edit</button>
+              <button class="btn btn-sm btn-danger" style="padding:4px 10px;font-size:0.8rem;border-radius:4px" onclick="deleteItem('services', ${s.id})">Delete</button>
+            </td>
+          </tr>
+        `).join('');
+      } catch (e) { console.error(e); }
+    }
+
+    async function loadEventsTable() {
+      try {
+        const res = await fetch('/api/events');
+        const items = await res.json();
+        const tbody = document.getElementById('events-table');
+        tbody.innerHTML = items.map(e => `
+          <tr>
+            <td>${e.id}</td>
+            <td>${escapeHtml(e.title)}</td>
+            <td>
+              <button class="btn btn-sm" style="background:var(--dark2);color:var(--gold);border:1px solid var(--gold);padding:4px 10px;font-size:0.8rem;border-radius:4px;cursor:pointer" onclick="editItem('event', ${e.id})">Edit</button>
+              <button class="btn btn-sm btn-danger" style="padding:4px 10px;font-size:0.8rem;border-radius:4px" onclick="deleteItem('events', ${e.id})">Delete</button>
+            </td>
+          </tr>
+        `).join('');
+      } catch (e) { console.error(e); }
+    }
+
+    async function loadOffersTable() {
+      try {
+        const res = await fetch('/api/offers');
+        const items = await res.json();
+        const tbody = document.getElementById('offers-table');
+        tbody.innerHTML = items.map(o => `
+          <tr>
+            <td>${o.id}</td>
+            <td>${escapeHtml(o.title)}</td>
+            <td>
+              <button class="btn btn-sm" style="background:var(--dark2);color:var(--gold);border:1px solid var(--gold);padding:4px 10px;font-size:0.8rem;border-radius:4px;cursor:pointer" onclick="editItem('offer', ${o.id})">Edit</button>
+              <button class="btn btn-sm btn-danger" style="padding:4px 10px;font-size:0.8rem;border-radius:4px" onclick="deleteItem('offers', ${o.id})">Delete</button>
+            </td>
+          </tr>
+        `).join('');
+      } catch (e) { console.error(e); }
+    }
+
+    async function loadMenuTable() {
+      try {
+        const res = await fetch('/api/menu');
+        const items = await res.json();
+        const tbody = document.getElementById('menu-table');
+        tbody.innerHTML = items.map(m => `
+          <tr>
+            <td>${m.id}</td>
+            <td>${escapeHtml(m.name)}</td>
+            <td>
+              <button class="btn btn-sm" style="background:var(--dark2);color:var(--gold);border:1px solid var(--gold);padding:4px 10px;font-size:0.8rem;border-radius:4px;cursor:pointer" onclick="editItem('menu', ${m.id})">Edit</button>
+              <button class="btn btn-sm btn-danger" style="padding:4px 10px;font-size:0.8rem;border-radius:4px" onclick="deleteItem('menu_items', ${m.id})">Delete</button>
+            </td>
+          </tr>
+        `).join('');
+      } catch (e) { console.error(e); }
+    }
+
+    async function loadGalleryTable() {
+      try {
+        const res = await fetch('/api/gallery');
+        const items = await res.json();
+        const tbody = document.getElementById('gallery-table');
+        tbody.innerHTML = items.map(g => `
+          <tr>
+            <td>${g.id}</td>
+            <td>${g.image ? `<img src="${g.image}" style="width:60px;height:60px;object-fit:cover;border-radius:4px">` : '—'}</td>
+            <td>${escapeHtml(g.caption) || '—'}</td>
+            <td>
+              <button class="btn btn-sm btn-danger" style="padding:4px 10px;font-size:0.8rem;border-radius:4px" onclick="deleteItem('gallery', ${g.id})">Delete</button>
+            </td>
+          </tr>
+        `).join('');
+      } catch (e) { console.error(e); }
+    }
+
+    async function loadTestimonialsTable() {
+      try {
+        const res = await fetch('/api/testimonials');
+        const items = await res.json();
+        const tbody = document.getElementById('testimonials-table');
+        tbody.innerHTML = items.map(t => `
+          <tr>
+            <td>${t.id}</td>
+            <td>${escapeHtml(t.name)}</td>
+            <td>
+              <button class="btn btn-sm" style="background:var(--dark2);color:var(--gold);border:1px solid var(--gold);padding:4px 10px;font-size:0.8rem;border-radius:4px;cursor:pointer" onclick="editItem('testimonial', ${t.id})">Edit</button>
+              <button class="btn btn-sm btn-danger" style="padding:4px 10px;font-size:0.8rem;border-radius:4px" onclick="deleteItem('testimonials', ${t.id})">Delete</button>
+            </td>
+          </tr>
+        `).join('');
+      } catch (e) { console.error(e); }
+    }
+
+    async function loadInfoForm() {
+      try {
+        const res = await fetch('/api/hotel-info');
+        const info = await res.json();
+        if (info.name) document.getElementById('info-name').value = info.name;
+        if (info.tagline) document.getElementById('info-tagline').value = info.tagline;
+        if (info.about) document.getElementById('info-about').value = info.about;
+        if (info.address) document.getElementById('info-address').value = info.address;
+        if (info.phone) document.getElementById('info-phone').value = info.phone;
+        if (info.email) document.getElementById('info-email').value = info.email;
+      } catch (e) { console.error(e); }
+    }
+
+    document.getElementById('info-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const msg = document.getElementById('info-message');
+      msg.className = 'form-message';
+      msg.style.display = 'none';
+      const fields = ['name', 'tagline', 'about', 'address', 'phone', 'email'];
+      try {
+        for (const key of fields) {
+          const val = document.getElementById('info-' + key).value;
+          await api('/api/hotel-info', {
+            method: 'PUT',
+            body: JSON.stringify({ key, value: val })
+          });
+        }
+        msg.className = 'form-message success';
+        msg.textContent = 'Hotel information updated successfully.';
+        msg.style.display = 'block';
+      } catch (err) {
+        msg.className = 'form-message error';
+        msg.textContent = 'Failed to update.';
+        msg.style.display = 'block';
+      }
+    });
+
+    function openModal(type, id = null) {
+      currentModal = type;
+      editId = id;
+      const overlay = document.getElementById('modal-overlay');
+      const title = document.getElementById('modal-title');
+      const fields = document.getElementById('modal-fields');
+      const submit = document.getElementById('modal-submit');
+      const msg = document.getElementById('modal-message');
+      msg.className = 'form-message';
+      msg.style.display = 'none';
+
+      title.textContent = id ? `Edit ${type.charAt(0).toUpperCase() + type.slice(1)}` : `Add ${type.charAt(0).toUpperCase() + type.slice(1)}`;
+      submit.textContent = id ? 'Update' : 'Save';
+
+      let html = '';
+      switch (type) {
+        case 'room':
+          html = `
+            <input type="hidden" id="f-room-id" value="${id || ''}">
+            <label>Room Name</label>
+            <input type="text" id="f-room-name" required>
+            <label>Description</label>
+            <textarea id="f-room-desc" rows="3"></textarea>
+            <label>Amenities (comma-separated)</label>
+            <input type="text" id="f-room-amenities" placeholder="e.g. WiFi, Mini Bar, Gym">
+            <label>Price per Night ($)</label>
+            <input type="number" id="f-room-price" step="0.01" min="0" required>
+            <label>Available Units</label>
+            <input type="number" id="f-room-units" min="0" value="5">
+            <label>Image</label>
+            <input type="file" id="f-room-image" accept="image/*">
+          `;
+          break;
+        case 'service':
+          html = `
+            <input type="hidden" id="f-service-id" value="${id || ''}">
+            <label>Service Name</label>
+            <input type="text" id="f-service-name" required>
+            <label>Description</label>
+            <textarea id="f-service-desc" rows="2"></textarea>
+            <label>Icon (image)</label>
+            <input type="file" id="f-service-icon" accept="image/*">
+          `;
+          break;
+        case 'event':
+          html = `
+            <input type="hidden" id="f-event-id" value="${id || ''}">
+            <label>Event Title</label>
+            <input type="text" id="f-event-title" required>
+            <label>Description</label>
+            <textarea id="f-event-desc" rows="3"></textarea>
+            <label>Image</label>
+            <input type="file" id="f-event-image" accept="image/*">
+          `;
+          break;
+        case 'offer':
+          html = `
+            <input type="hidden" id="f-offer-id" value="${id || ''}">
+            <label>Offer Title</label>
+            <input type="text" id="f-offer-title" required>
+            <label>Description</label>
+            <textarea id="f-offer-desc" rows="3"></textarea>
+            <label>Image</label>
+            <input type="file" id="f-offer-image" accept="image/*">
+          `;
+          break;
+        case 'menu':
+          html = `
+            <input type="hidden" id="f-menu-id" value="${id || ''}">
+            <label>Item Name</label>
+            <input type="text" id="f-menu-name" required>
+            <label>Description</label>
+            <textarea id="f-menu-desc" rows="2"></textarea>
+            <label>Image</label>
+            <input type="file" id="f-menu-image" accept="image/*">
+          `;
+          break;
+        case 'gallery':
+          html = `
+            <label>Image</label>
+            <input type="file" id="f-gallery-image" accept="image/*" required>
+            <label>Caption</label>
+            <input type="text" id="f-gallery-caption">
+            <label>Section</label>
+            <input type="text" id="f-gallery-section" placeholder="e.g. rooms, restaurant">
+          `;
+          break;
+        case 'testimonial':
+          html = `
+            <input type="hidden" id="f-testimonial-id" value="${id || ''}">
+            <label>Guest Name</label>
+            <input type="text" id="f-testimonial-name" required>
+            <label>Testimonial Text</label>
+            <textarea id="f-testimonial-content" rows="3" required></textarea>
+            <label>Photo (optional)</label>
+            <input type="file" id="f-testimonial-image" accept="image/*">
+          `;
+          break;
+      }
+      fields.innerHTML = html;
+      overlay.classList.add('active');
+
+      if (id) loadEditData(type, id);
+    }
+
+    async function loadEditData(type, id) {
+      try {
+        let endpoint = `/api/${type}s`;
+        if (type === 'menu') endpoint = '/api/menu';
+        if (type === 'event') endpoint = '/api/events';
+        if (type === 'offer') endpoint = '/api/offers';
+        if (type === 'service') endpoint = '/api/services';
+        if (type === 'testimonial') endpoint = '/api/testimonials';
+        const res = await fetch(endpoint);
+        const items = await res.json();
+        const item = items.find(i => i.id == id);
+        if (!item) return;
+
+        switch (type) {
+          case 'room':
+            document.getElementById('f-room-name').value = item.name || '';
+            document.getElementById('f-room-desc').value = item.description || '';
+            let amens = item.amenities;
+            if (Array.isArray(amens)) amens = amens.join(', ');
+            else if (typeof amens === 'string') { try { amens = JSON.parse(amens).join(', '); } catch(e) {} }
+            document.getElementById('f-room-amenities').value = amens || '';
+            document.getElementById('f-room-price').value = item.price_per_night || '';
+            document.getElementById('f-room-units').value = item.available_units || 5;
+            break;
+          case 'service':
+            document.getElementById('f-service-name').value = item.name || '';
+            document.getElementById('f-service-desc').value = item.description || '';
+            break;
+          case 'event':
+            document.getElementById('f-event-title').value = item.title || '';
+            document.getElementById('f-event-desc').value = item.description || '';
+            break;
+          case 'offer':
+            document.getElementById('f-offer-title').value = item.title || '';
+            document.getElementById('f-offer-desc').value = item.description || '';
+            break;
+          case 'menu':
+            document.getElementById('f-menu-name').value = item.name || '';
+            document.getElementById('f-menu-desc').value = item.description || '';
+            break;
+          case 'testimonial':
+            document.getElementById('f-testimonial-name').value = item.name || '';
+            document.getElementById('f-testimonial-content').value = item.content || '';
+            break;
+        }
+      } catch (e) { console.error(e); }
+    }
+
+    function closeModal() {
+      document.getElementById('modal-overlay').classList.remove('active');
+      document.getElementById('modal-message').className = 'form-message';
+      document.getElementById('modal-message').style.display = 'none';
+    }
+
+    document.getElementById('modal-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const msg = document.getElementById('modal-message');
+      msg.className = 'form-message';
+      msg.style.display = 'none';
+
+      const type = currentModal;
+      const id = editId;
+      const isEdit = id !== null;
+      let url, formData;
+
+      switch (type) {
+        case 'room': {
+          formData = new FormData();
+          formData.append('name', document.getElementById('f-room-name').value);
+          formData.append('description', document.getElementById('f-room-desc').value);
+          const amens = document.getElementById('f-room-amenities').value.split(',').map(a => a.trim()).filter(Boolean);
+          formData.append('amenities', JSON.stringify(amens));
+          formData.append('price_per_night', document.getElementById('f-room-price').value);
+          formData.append('available_units', document.getElementById('f-room-units').value);
+          const imgFile = document.getElementById('f-room-image').files[0];
+          if (imgFile) formData.append('image', imgFile);
+          url = isEdit ? `/api/rooms/${id}` : '/api/rooms';
+          break;
+        }
+        case 'service': {
+          formData = new FormData();
+          formData.append('name', document.getElementById('f-service-name').value);
+          formData.append('description', document.getElementById('f-service-desc').value);
+          const iconFile = document.getElementById('f-service-icon').files[0];
+          if (iconFile) formData.append('icon', iconFile);
+          url = isEdit ? `/api/services/${id}` : '/api/services';
+          break;
+        }
+        case 'event': {
+          formData = new FormData();
+          formData.append('title', document.getElementById('f-event-title').value);
+          formData.append('description', document.getElementById('f-event-desc').value);
+          const eImg = document.getElementById('f-event-image').files[0];
+          if (eImg) formData.append('image', eImg);
+          url = isEdit ? `/api/events/${id}` : '/api/events';
+          break;
+        }
+        case 'offer': {
+          formData = new FormData();
+          formData.append('title', document.getElementById('f-offer-title').value);
+          formData.append('description', document.getElementById('f-offer-desc').value);
+          const oImg = document.getElementById('f-offer-image').files[0];
+          if (oImg) formData.append('image', oImg);
+          url = isEdit ? `/api/offers/${id}` : '/api/offers';
+          break;
+        }
+        case 'menu': {
+          formData = new FormData();
+          formData.append('name', document.getElementById('f-menu-name').value);
+          formData.append('description', document.getElementById('f-menu-desc').value);
+          const mImg = document.getElementById('f-menu-image').files[0];
+          if (mImg) formData.append('image', mImg);
+          url = isEdit ? `/api/menu/${id}` : '/api/menu';
+          break;
+        }
+        case 'gallery': {
+          formData = new FormData();
+          const gImg = document.getElementById('f-gallery-image').files[0];
+          if (!gImg) { msg.className = 'form-message error'; msg.textContent = 'Image is required'; msg.style.display = 'block'; return; }
+          formData.append('image', gImg);
+          formData.append('caption', document.getElementById('f-gallery-caption').value);
+          formData.append('section', document.getElementById('f-gallery-section').value);
+          url = '/api/gallery';
+          break;
+        }
+        case 'testimonial': {
+          formData = new FormData();
+          formData.append('name', document.getElementById('f-testimonial-name').value);
+          formData.append('content', document.getElementById('f-testimonial-content').value);
+          const tImg = document.getElementById('f-testimonial-image').files[0];
+          if (tImg) formData.append('image', tImg);
+          url = isEdit ? `/api/testimonials/${id}` : '/api/testimonials';
+          break;
+        }
+      }
+
+      try {
+        const method = isEdit ? 'PUT' : 'POST';
+        const res = await api(url, { method, body: formData });
+        if (!res) return;
+        const result = await res.json();
+        if (res.ok) {
+          msg.className = 'form-message success';
+          msg.textContent = isEdit ? 'Updated successfully!' : 'Added successfully!';
+          msg.style.display = 'block';
+          setTimeout(() => {
+            closeModal();
+            loadAll();
+          }, 800);
+        } else {
+          msg.className = 'form-message error';
+          msg.textContent = result.error || 'Operation failed';
+          msg.style.display = 'block';
+        }
+      } catch (err) {
+        msg.className = 'form-message error';
+        msg.textContent = 'Network error';
+        msg.style.display = 'block';
+      }
+    });
+
+    async function deleteItem(table, id) {
+      if (!confirm('Are you sure you want to delete this item?')) return;
+      try {
+        const res = await api(`/api/${table}/${id}`, { method: 'DELETE' });
+        if (!res) return;
+        const result = await res.json();
+        if (res.ok) {
+          loadAll();
+        } else {
+          alert(result.error || 'Delete failed');
+        }
+      } catch (err) {
+        alert('Network error');
+      }
+    }
+
+    function editItem(type, id) {
+      openModal(type, id);
+    }
+  </script>
+</body>
+</html>
